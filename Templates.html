@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Movie Recommender</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Movie Recommendations</h1>
+    <form id="recommendForm">
+        <input type="text" name="movie" placeholder="Enter Movie Title" required>
+        <button type="submit">Get Recommendations</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('recommendForm').onsubmit = async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/recommend', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            let resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            if (data.recommendations) {
+                data.recommendations.forEach(movie => {
+                    resultsDiv.innerHTML += '<p>' + movie + '</p>';
+                });
+            } else {
+                resultsDiv.innerHTML = '<p>' + data.error + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
